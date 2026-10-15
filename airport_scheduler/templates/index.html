@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Airport Runway Scheduler</title>
+<link rel="stylesheet" href="/static/style.css"></head>
+<body>
+<header><h1>✈ AIRPORT RUNWAY SCHEDULER</h1>
+  <div class="ctl"><span id="clock" class="pill">Tick 0</span>
+    <button onclick="tick()">Next Tick ▶</button>
+    <button id="autoBtn" onclick="toggleAuto()">Auto: OFF</button>
+    <button class="ghost" onclick="post('/api/seed')">Load Sample</button>
+    <button class="ghost" onclick="if(confirm('Reset everything?'))post('/api/reset')">Reset</button></div>
+</header>
+<nav id="nav">
+  <a data-t="dashboard" class="on">Dashboard</a><a data-t="add">Add Aircraft</a>
+  <a data-t="queue">Aircraft Queue</a><a data-t="resources">Resources</a>
+  <a data-t="scheduling">Scheduling</a><a data-t="deadlock">Deadlock</a><a data-t="stats">Statistics</a>
+</nav>
+<main>
+<section id="dashboard" class="tab on">
+  <div class="grid">
+    <div class="card"><h2>Runways</h2><div id="d-runways" class="row"></div></div>
+    <div class="card"><h2>Deadlock Status</h2><div id="d-dead"></div></div>
+  </div>
+  <div class="card"><h2>Waiting Aircraft (by priority)</h2><div id="d-wait"></div></div>
+  <div class="card"><h2>Gates &amp; Ground Crew</h2><div id="d-res" class="row"></div></div>
+</section>
+
+<section id="add" class="tab"><div class="card narrow"><h2>Add Aircraft</h2>
+  <label>Callsign<input id="f-call" placeholder="e.g. A107"></label>
+  <label>Type (sets priority)<select id="f-type"></select></label>
+  <label>Operation<select id="f-op"><option>Landing</option><option>Takeoff</option></select></label>
+  <label>Fuel level %<input id="f-fuel" type="number" min="0" max="100" value="80"></label>
+  <p class="muted">Fuel ≤ 15% adds +2 priority (low fuel emergency).</p>
+  <button onclick="addAircraft()">Add to Queue</button> <span id="f-msg" class="msg"></span></div></section>
+
+<section id="queue" class="tab"><div class="card"><h2>All Aircraft</h2><div id="q-all"></div></div></section>
+
+<section id="resources" class="tab"><div class="card"><h2>Resource Status</h2><div id="r-all"></div></div></section>
+
+<section id="scheduling" class="tab">
+  <div class="card"><h2>Scheduling Queue</h2><div id="s-queue"></div>
+  <p class="muted">Highest priority first; ties broken by arrival. Aging adds +1 priority for every <b id="age"></b> ticks waiting (max 9).</p></div>
+  <div class="card"><h2>Event Log</h2><div id="s-log" class="log"></div></div></section>
+
+<section id="deadlock" class="tab">
+  <div class="card"><h2>Live Deadlock Monitor</h2><div id="k-live"></div></div>
+  <div class="card"><h2>Deadlock Demonstration</h2>
+    <button onclick="runDemo()">Create Conflict &amp; Show Prevention</button><div id="k-demo"></div></div></section>
+
+<section id="stats" class="tab"><div class="grid">
+  <div class="card"><h2>Summary</h2><div id="st-sum"></div></div>
+  <div class="card"><h2>Resource Usage (times used)</h2><div id="st-use"></div></div></div></section>
+</main>
+<script src="/static/app.js"></script>
+</body></html>
